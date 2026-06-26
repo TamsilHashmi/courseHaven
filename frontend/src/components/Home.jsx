@@ -13,6 +13,7 @@ import { BACKEND_URL } from "../utils/utils";
 function Home() {
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
 
@@ -56,6 +57,8 @@ function Home() {
         setCourses(response.data.courses);
       } catch (error) {
         console.log("error in fetchCourses ", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchCourses();
@@ -80,40 +83,42 @@ function Home() {
     }
   };
 
-  var settings = {
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  let slidesToShow = 4;
+  let slidesToScroll = 1;
+  let centerMode = false;
+
+  if (windowWidth < 640) {
+    slidesToShow = 1;
+    slidesToScroll = 1;
+    centerMode = false;
+  } else if (windowWidth < 768) {
+    slidesToShow = 2;
+    slidesToScroll = 1;
+  } else if (windowWidth < 1024) {
+    slidesToShow = 3;
+    slidesToScroll = 1;
+  }
+
+  const settings = {
     dots: true,
-    infinite: false,
+    infinite: courses.length > slidesToShow,
     speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    initialSlide: 0,
+    slidesToShow: slidesToShow,
+    slidesToScroll: slidesToScroll,
     autoplay: true,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 2,
-          infinite: true,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
+    centerMode: centerMode,
   };
 
   return (
@@ -165,7 +170,7 @@ function Home() {
 
       {/* Main content wrapper */}
       <main className="flex-grow container mx-auto px-6 relative z-10">
-        
+
         {/* Hero Section */}
         <section className="text-center py-20 md:py-32 flex flex-col items-center justify-center">
           <div className="inline-block bg-white/5 border border-white/10 text-orange-400 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm">
@@ -199,32 +204,45 @@ function Home() {
             <h2 className="text-3xl font-bold tracking-tight">Featured Courses</h2>
             <Link to="/courses" className="text-orange-400 hover:text-orange-300 font-medium text-sm hidden sm:block">View all →</Link>
           </div>
-          
+
           <div className="px-2 sm:px-0">
-            <Slider {...settings}>
-              {courses.map((course) => (
-                <div key={course._id} className="p-3 outline-none">
-                  <div className="bg-white/[0.02] backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_rgba(249,115,22,0.15)] hover:border-orange-500/30 group">
-                    <div className="relative h-48 overflow-hidden bg-gray-900/50">
-                      <img
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-90 group-hover:opacity-100"
-                        src={course.image?.url || "/imgPL.webp"}
-                        alt={course.title}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-80"></div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-lg font-bold text-white line-clamp-2 min-h-[3.5rem] group-hover:text-orange-400 transition-colors">
-                        {course.title}
-                      </h3>
-                      <button className="w-full mt-5 bg-white/5 hover:bg-orange-500 border border-white/10 hover:border-orange-500 text-white py-2.5 px-4 rounded-xl transition-all duration-300 font-medium text-sm">
-                        Enroll Now
-                      </button>
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+              </div>
+            ) : courses.length > 0 ? (
+              <Slider
+                key={`${windowWidth < 640 ? "sm" : windowWidth < 768 ? "md" : windowWidth < 1024 ? "lg" : "xl"}-${courses.length}`}
+                {...settings}
+              >
+                {courses.map((course) => (
+                  <div key={course._id} className="px-2 outline-none">
+                    <div className="bg-white/[0.02] backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_rgba(249,115,22,0.15)] hover:border-orange-500/30 group max-w-sm mx-auto">
+                      <div className="relative h-56 sm:h-48 overflow-hidden bg-gray-900/50">
+                        <img
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-90 group-hover:opacity-100"
+                          src={course.image?.url || "/imgPL.webp"}
+                          alt={course.title}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-80"></div>
+                      </div>
+                      <div className="p-6">
+                        <h3 className="text-base sm:text-lg font-bold text-white line-clamp-2 min-h-[3.5rem] group-hover:text-orange-400 transition-colors">
+                          {course.title}
+                        </h3>
+                        <button className="w-full mt-5 bg-white/5 hover:bg-orange-500 border border-white/10 hover:border-orange-500 text-white py-2.5 px-4 rounded-xl transition-all duration-300 font-medium text-sm">
+                          Enroll Now
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </Slider>
+                ))}
+              </Slider>
+            ) : (
+              <div className="text-center text-gray-400 py-10">
+                No featured courses found.
+              </div>
+            )}
           </div>
         </section>
       </main>
@@ -232,7 +250,7 @@ function Home() {
       {/* Footer */}
       <footer className="bg-[#0a0f1c] border-t border-white/5 pt-16 pb-8 relative z-10">
         <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16">
-          
+
           {/* Brand Col */}
           <div className="md:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
             <div className="flex items-center space-x-3 mb-6">
