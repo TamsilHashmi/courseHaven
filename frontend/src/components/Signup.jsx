@@ -37,7 +37,7 @@ function Signup() {
       toast.success(response.data.message);
       navigate("/login");
     } catch (error) {
-      if (error.response) {        
+      if (error.response) {
         setErrorMessage(error.response.data.errors || "Signup failed!!!");
       }
     }
@@ -53,9 +53,11 @@ function Signup() {
       {/* Header */}
       <header className="absolute top-0 left-0 w-full flex justify-between items-center p-6 z-20">
         <div className="flex items-center space-x-3">
-          <img src={logo} alt="Logo" className="w-10 h-10 rounded-full shadow-lg shadow-orange-500/20" />
-          <Link to={"/"} className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-500 tracking-tight">
-            CourseHaven
+          <Link to={"/"} className="flex items-center space-x-3">
+            <img src={logo} alt="Logo" className="w-10 h-10 rounded-full shadow-lg shadow-orange-500/20" />
+            <span className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-500 tracking-tight hidden sm:block">
+              CourseHaven
+            </span>
           </Link>
         </div>
         <div className="flex items-center space-x-4">
@@ -132,7 +134,7 @@ function Signup() {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1.5 ml-1">
                 Password

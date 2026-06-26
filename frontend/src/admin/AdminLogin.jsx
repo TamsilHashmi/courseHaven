@@ -31,9 +31,9 @@ function AdminLogin() {
         },
       );
       console.log("AdminLogin successfull: ", response.data);
-      toast.success(response.data.message);  
-      localStorage.setItem("admin", JSON.stringify(response.data));     
-      navigate("/admin/dashboard");    
+      toast.success(response.data.message);
+      localStorage.setItem("admin", JSON.stringify(response.data));
+      navigate("/admin/dashboard");
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.errors || "AdminLogin failed!!!");
@@ -51,9 +51,11 @@ function AdminLogin() {
       {/* Header */}
       <header className="absolute top-0 left-0 w-full flex justify-between items-center p-6 z-20">
         <div className="flex items-center space-x-3">
-          <img src={logo} alt="Logo" className="w-10 h-10 rounded-full shadow-lg shadow-blue-500/20" />
-          <Link to={"/"} className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 tracking-tight">
-            CourseHaven
+          <Link to={"/"} className="flex items-center space-x-3">
+            <img src={logo} alt="Logo" className="w-10 h-10 rounded-full shadow-lg shadow-blue-500/20" />
+            <span className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 tracking-tight hidden sm:block">
+              CourseHaven
+            </span>
           </Link>
         </div>
         <div className="flex items-center space-x-4">
@@ -102,7 +104,7 @@ function AdminLogin() {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1.5 ml-1">
                 Password
