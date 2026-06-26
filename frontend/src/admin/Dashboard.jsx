@@ -57,7 +57,7 @@ function Dashboard() {
           <span className="text-xs text-gray-400 mt-1 uppercase tracking-widest font-semibold">Active Session</span>
         </div>
         
-        <nav className="flex flex-row md:flex-col space-x-4 md:space-x-0 md:space-y-4 w-full justify-center md:justify-start overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
+        <nav className="flex flex-row md:flex-col space-x-4 md:space-x-0 md:space-y-4 w-full justify-start overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
           <Link to="/admin/our-courses" className="flex-1 md:flex-none">
             <button className="w-full bg-white/5 hover:bg-blue-600/50 border border-white/10 hover:border-blue-500/50 text-white py-3 px-4 rounded-xl transition-all duration-300 font-medium text-sm shadow-sm whitespace-nowrap">
               Our Courses
