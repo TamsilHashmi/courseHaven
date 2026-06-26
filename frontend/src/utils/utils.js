@@ -1,0 +1,1 @@
+export const BACKEND_URL = "https://coursehaven-2nr3.onrender.com/api/v1";
